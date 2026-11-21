@@ -1,7 +1,7 @@
 {
-  "name": "frontend-template",
+  "name": "landesprobe",
   "version": "0.1.0",
-  "description": "Minimal Bun + TypeScript + React template for web projects",
+  "description": "Landesprobe: rate the country from its everyday standards",
   "type": "module",
   "scripts": {
     "dev": "bun index.html",

@@ -1,0 +1,517 @@
+:root {
+  --bg: #0c0c0e;
+  --surface: #141417;
+  --surface-2: #1b1b20;
+  --line: #26262c;
+  --text: #e8e6e3;
+  --muted: #8d8b88;
+  --accent: #f0a040;
+  --accent-dim: #6d4a1d;
+  --ok: #7fd18b;
+  --near: #e0c060;
+  --off: #c47070;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% -10%, #1d1a15 0%, transparent 45%), var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  line-height: 1.45;
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.shell {
+  width: min(100% - 2rem, 980px);
+  margin: 0 auto;
+  padding: 2.5rem 0 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.tagline {
+  color: var(--muted);
+  max-width: 58ch;
+  font-size: 0.92rem;
+  margin-top: 0.35rem;
+}
+
+.score-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.score-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.score-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.round-line {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.clues {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.7rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 156px;
+  padding: 0.85rem 0.95rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-align: left;
+  color: var(--text);
+  font: inherit;
+}
+
+.card.locked {
+  border-style: dashed;
+  cursor: pointer;
+  color: var(--muted);
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.card.locked:hover,
+.card.locked:focus-visible {
+  border-color: var(--accent-dim);
+  background: var(--surface-2);
+}
+
+.card-head {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.card-cost {
+  color: var(--accent);
+  letter-spacing: 0;
+}
+
+.card-locked {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.card-open {
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.visual {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  justify-content: center;
+  flex: 1;
+}
+
+.value {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.value.big {
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.plugs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.plug {
+  width: 52px;
+  height: 52px;
+}
+
+.plug-face {
+  fill: #1f1f25;
+  stroke: #35353d;
+  stroke-width: 3;
+}
+
+.plug-hole {
+  fill: #08080a;
+}
+
+.road {
+  width: 100%;
+  max-width: 150px;
+  border-radius: 8px;
+}
+
+.road-ground {
+  fill: #101014;
+}
+
+.road-surface {
+  fill: #232329;
+}
+
+.road-line {
+  fill: #4a4a52;
+}
+
+.road-car {
+  fill: var(--accent);
+}
+
+.road-glass {
+  fill: #0c0c0e;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 6px;
+  color: var(--accent);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.9rem;
+}
+
+.badge {
+  align-self: flex-start;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.guessbox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.guess-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.typeahead {
+  position: relative;
+}
+
+.guess-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.guess-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.3rem);
+  left: 0;
+  right: 0;
+  list-style: none;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: 15rem;
+}
+
+.suggestion {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.suggestion.active,
+.suggestion:hover {
+  background: #2a2a31;
+}
+
+.attempts {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.guess-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.guess {
+  padding: 0.6rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.guess-name {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.marks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 0.76rem;
+}
+
+.mark.match {
+  color: var(--ok);
+  border-color: #2f4a35;
+}
+
+.mark.close {
+  color: var(--near);
+  border-color: #4a4325;
+}
+
+.mark.off {
+  color: var(--off);
+  border-color: #4a2c2c;
+}
+
+.mark-clue {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.mark-value {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.reveal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.4rem;
+  border: 1px solid var(--accent-dim);
+  border-radius: 14px;
+  background: linear-gradient(160deg, #1a1712 0%, var(--surface) 60%);
+}
+
+.reveal-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.reveal-name {
+  font-size: 1.7rem;
+  font-weight: 650;
+}
+
+.reveal-points {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.reveal-fact {
+  max-width: 68ch;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.reveal-clues {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.5rem;
+  margin: 0.4rem 0 0.6rem;
+}
+
+.reveal-clue {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.reveal-value {
+  font-size: 0.88rem;
+}
+
+.primary {
+  align-self: flex-start;
+  padding: 0.7rem 1.4rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  color: #17120a;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: #ffb457;
+}
+
+.score-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.score-total {
+  font-size: 2.6rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.score-max {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.score-verdict {
+  max-width: 60ch;
+}
+
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.score-table th,
+.score-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.score-table thead th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.score-table tbody th {
+  font-weight: 500;
+}
+
+.rules {
+  font-size: 0.76rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 0.9rem;
+  max-width: 70ch;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .shell {
+    padding: 1.5rem 0 2rem;
+  }
+
+  .reveal-name {
+    font-size: 1.4rem;
+  }
+}

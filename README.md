@@ -1,106 +1,60 @@
-# 🦊 frontend-template
+# Landesprobe
 
-[![coverage](https://raw.githubusercontent.com/schlaufuchs26/frontend-template/badge/coverage.svg)](https://github.com/schlaufuchs26/frontend-template/actions/workflows/test.yml?query=branch%3Amain)
+Rate das Land an seinem Alltag: Steckdose, Netzspannung, Straßenseite, Notruf,
+Datumsformat, Farbfernsehen. Acht Runden, sechs Hinweise pro Runde, ein Tipp.
 
-Minimal [Bun](https://bun.sh) + TypeScript + React starter for static web projects. Ships to GitHub Pages, devs locally with HMR.
+Live: https://schlaufuchs26.github.io/landesprobe/
 
-## Quick Start
+## Spielen
+
+Jede Runde zeigt sechs Hinweis-Karten, die erste liegt offen. Jede weitere Karte
+kostet 120 Punkte, ein Fehltipp kostet 400, nach drei Fehltipps ist die Runde
+vorbei. Ein richtiger Tipp zahlt 1000 Punkte minus der geöffneten Hinweise;
+insgesamt sind 8000 Punkte zu holen.
+
+Nach einem Fehltipp vergleicht das Spiel den Tipp mit den offenen Karten:
+✓ stimmt, ≈ ähnlich (gleicher Steckertyp, gleiche Notrufnummer, gleiche
+Spannung), ✗ anders.
+
+## Zwei unabhängige Wege zur Antwort
+
+1. **Das Bündel lesen, ohne Fachwissen.** Jeder Hinweis allein ist schwach, die
+   Kombination ist eine Landkarte: Typ G plus Linksverkehr heißt britischer
+   Einflusskreis, 230 V bei 60 Hz gibt es nur in Saudi-Arabien, SECAM zeigt
+   Frankreich und seine früheren Kolonien, die Gruppierung 1,00,000 deutet auf
+   Indien, Pakistan, Nepal oder Bangladesch. Wer kein Land kennt, kommt über
+   Ausschließen weiter, und der Vergleich nach einem Fehltipp sagt genau,
+   welcher Teil des Bündels noch nicht passt.
+2. **Länderwissen.** Wer weiß, dass Japan an zwei Netzen hängt, dass Südafrika
+   die 10111 wählt oder dass Österreich 122, 133 und 144 behalten hat, springt
+   direkt zur Antwort.
+
+Die erste Route funktioniert ohne Länderkenntnis, die zweite ohne Logik.
+
+## Woher die Daten kommen
+
+Die Werte stehen von Hand in `src/data/countries.ts`: Steckertypen nach
+IEC 60083, Netzspannungen und Frequenzen, Links- und Rechtsverkehr,
+Notrufnummern, Datums- und Zahlenformate, Papierformate, Temperatur- und
+Geschwindigkeitseinheiten, PAL/SECAM/NTSC und der erste Wochentag. Jedes Land
+hat eine kurze Begründung (`fact`), die in der Auflösung erscheint; sie erklärt
+die Kuriosität, nicht nur die Zahl.
+
+Zwei Invarianten prüft `tests/data.test.ts`:
+
+- Die sechs Hinweise einer Runde lassen zusammen genau ein Land aus dem Pool
+  von 47 übrig. Sonst könnte man richtig raten und trotzdem verlieren.
+- Der erste, freie Hinweis allein reicht nicht: er muss auf mehrere Länder
+  passen.
+
+## Entwicklung
 
 ```bash
-curl -fsSL https://bun.sh/install | bash  # if you haven't already
-
-git clone https://github.com/schlaufuchs26/frontend-template.git
-cd frontend-template
 bun install
-bun dev
+bun run dev      # lokaler Server
+bun run checks   # format, tsc, biome, knip, Tests
+bun run test:e2e # Playwright im echten Chromium
+bun run build    # statisch nach dist/
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-## Structure
-
-```
-index.html          — entry point for dev server and production build
-frontend.tsx         — React app (TSX)
-package.json        — React 19 + dev tooling
-tsconfig.json       — strict TS, ESNext
-bunfig.toml         — test preload + coverage thresholds
-biome.json          — formatter + linter config
-knip.json           — dead code detection
-playwright.config.ts — browser-test config (dev-server, Chromium path)
-.githooks/          — pre-commit hook (runs bun run checks)
-.github/workflows/  — CI: test, e2e, lint, typecheck, deploy, dead code
-scripts/            — coverage report + badge generators
-tests/              — Happy DOM + Testing Library setup, component tests
-e2e/                — Playwright browser tests (real Chromium)
-```
-
-## Scripts
-
-| Command | What it does |
-|---|---|
-| `bun dev` | Dev server with HMR on :3000 |
-| `bun run build` | Bundle index.html → dist/ (minified, production React) |
-| `bun test` | Run tests |
-| `bun run test:e2e` | Browser tests in real Chromium (needs a browser) |
-| `bun run test:coverage` | Text coverage report |
-| `bun run test:ci` | Generate coverage/lcov.info for CI |
-| `bun run checks` | Format + typecheck + lint + dead code + tests |
-
-### Production build
-
-`bun run build` clears `dist/`, then bundles with `--minify` and pins
-`process.env.NODE_ENV="production"`. Both flags are required: without them
-React ships its development build, which for this template is 975 kB with
-prop-type checks and dev warnings instead of 186 kB (measured 2026-09-11,
-Bun 1.3.13). Verify a build with `grep -c "process.env" dist/*.js` (prints
-0 when the define applied); `tests/build.test.ts` runs the build and fails
-on dev-only code.
-
-## Deploy
-
-Push to `main` and GitHub Actions deploys to Pages automatically:
-
-- **Build:** `bun install && bun run build`
-- **Deploy:** `dist/` → `https://schlaufuchs26.github.io/frontend-template/`
-
-Manual trigger: Actions → Deploy to GitHub Pages → Run workflow.
-
-## Testing
-
-Bun's built-in test runner + Happy DOM + Testing Library. Pre-configured in `bunfig.toml`. Tests auto-discover: `*.test.{ts,tsx}`, `*.spec.{ts,tsx}`.
-
-```bash
-bun test                   # run all tests
-bun run test:coverage      # text coverage report
-bun run test:ci            # generate coverage/lcov.info
-bun test --watch           # watch mode
-```
-
-### Coverage
-
-Thresholds enforced at 80% lines/functions/statements. On every push to `main`, the workflow generates a badge and force-pushes it to the `badge` branch — a single orphan commit, no history clutter. PRs get a sticky comment with per-file coverage.
-
-### Browser tests (Playwright)
-
-`bun run test:e2e` drives real Chromium against the dev server:
-`playwright.config.ts` starts `bun index.html` on port 4173, and
-`e2e/smoke.playwright.ts` checks the app boots, the counter reacts to a real
-click, and the shell centers without overflowing a 1280x757 laptop viewport.
-happy-dom has no layout engine, so geometry regressions pass every unit test;
-this suite is where they get caught. When a project outgrows the template,
-keep the file's shape and replace the assertions with that project's layout
-contract.
-
-CI installs Playwright's Chromium (`bunx playwright install --with-deps
-chromium`). On a box that ships Chromium via nix, like the fuchs host, set
-`PLAYWRIGHT_CHROMIUM_PATH` or rely on the default
-`/home/exedev/.nix-profile/bin/chromium` when it exists. A failing run uploads
-its HTML report as a workflow artifact.
-
-## Philosophy
-
-- **Zero-config dev server.** `bun index.html` gives you HMR, TSX transpilation, SPA routing, and bundling with no setup.
-- **No framework lock-in.** Just React. Swap to Vue, Svelte, or vanilla — change `frontend.tsx` and go.
-- **HTML-first.** Same `index.html` is the dev entry point and the build entry point. No dual files, no glue code.
-- **Grows with you.** Start here, add Tailwind, shadcn, whatever. No scaffolding to undo.
+Der Bau braucht nur Bun und React, keine weiteren Abhängigkeiten.
